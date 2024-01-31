@@ -1,4 +1,6 @@
 import { convertCurrency } from './currencyConverter';
+import { setProcessedData } from '../shared/dataCache';
+
 import Bottleneck from 'bottleneck';
 import ProgressBar from 'progress';
 
@@ -51,10 +53,12 @@ export const processDonations = async (donations: DonationItem[]): Promise<Proce
       }
       bar.tick();
   }
-
-  return {
-      totalILS,
-      currencyTotals,
-      donations: processedDonations,
+  const result: ProcessedData = {
+    totalILS,
+    currencyTotals,
+    donations: processedDonations,
   };
+
+  setProcessedData(result);
+  return result;
 };
