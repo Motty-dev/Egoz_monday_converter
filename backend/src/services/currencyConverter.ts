@@ -8,6 +8,11 @@ type ConversionRatesCache = {
     [key: string]: number;
 };
 
+export interface ConversionResult {
+  convertedAmount: number;
+  rate: number;
+}
+
 let conversionRatesCache: ConversionRatesCache = {};
 
 const isWithinLast24Hours = (date: string): boolean => {
@@ -40,12 +45,12 @@ loadCache();
 
 const API_KEY = process.env.CONVERTOR_API_KEY;
 
-export const convertCurrency = async (amount: number, srcCurrency: string, date: string): Promise<number> => {
+export const convertCurrency = async (amount: number, srcCurrency: string, date: string): Promise<ConversionResult> => {
   const cacheKey = `${date}_${srcCurrency}_to_ILS`;
 
   if (conversionRatesCache[cacheKey]) {
-      return amount * conversionRatesCache[cacheKey];
-  }
+    return { convertedAmount: amount * conversionRatesCache[cacheKey], rate: conversionRatesCache[cacheKey] };
+}
 
   try {
       let url;
@@ -59,7 +64,7 @@ export const convertCurrency = async (amount: number, srcCurrency: string, date:
       
       conversionRatesCache[cacheKey] = rate; 
       saveToCache(); 
-      return amount * rate;
+      return { convertedAmount: amount * rate, rate };
 
   } catch (error) {
       console.error("Error fetching conversion rate: ", error);

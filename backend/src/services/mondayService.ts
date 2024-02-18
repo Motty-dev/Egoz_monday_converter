@@ -112,3 +112,23 @@ export const fetchDataFromBoard = async (boardId: number): Promise<DonationItem[
     throw new Error("Failed to fetch data from Monday.com");
   }
 };
+
+export const updateItemOnBoard = async (itemId: string, finalAmount: number, rate: number, boardId: number) => {
+  const finalAmountColumnId = 'numbers53'; 
+  const rateColumnId = 'numbers6'; 
+
+  try {
+      const response = await monday.api(`
+          mutation {
+              change_multiple_column_values(board_id: ${boardId}, item_id: ${itemId}, column_values: "{\"${finalAmountColumnId}\": ${finalAmount}, \"${rateColumnId}\": ${rate}}") {
+                  id
+              }
+          }
+      `);
+
+      return response;
+  } catch (error) {
+      console.error("Error updating item on Monday.com:", error);
+      throw new Error("Failed to update item on Monday.com");
+  }
+};

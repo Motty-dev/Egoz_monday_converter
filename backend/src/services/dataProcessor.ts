@@ -1,5 +1,7 @@
 import { convertCurrency } from './currencyConverter';
 import { setProcessedData } from '../shared/dataCache';
+import { ConversionResult } from './currencyConverter';
+
 
 import Bottleneck from 'bottleneck';
 import ProgressBar from 'progress';
@@ -43,7 +45,7 @@ export const processDonations = async (donations: DonationItem[]): Promise<Proce
       try {
           let amountILS: number = donation.amount;
           if (donation.currency !== 'ILS') {
-              amountILS = await limitedConvertCurrency(donation.amount, donation.currency, donation.date).then((res: number): number => Number(res.toFixed(2)));
+              amountILS = await limitedConvertCurrency(donation.amount, donation.currency, donation.date).then((res: ConversionResult): number => Number(res.convertedAmount.toFixed(2)));
           }
           totalILS += amountILS;
           currencyTotals[donation.currency] = (currencyTotals[donation.currency] || 0) + amountILS;

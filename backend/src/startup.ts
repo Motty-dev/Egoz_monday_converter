@@ -4,6 +4,7 @@ import { processDonations, ProcessedData } from './services/dataProcessor';
 export const runStartup = async () => {
     try {
         const boardId = parseInt(process.env.BOARD_ID || "0");
+        console.log("Fetching Data from => BOARD_ID: " + boardId);
         if (isNaN(boardId)) {
             throw new Error("BOARD_ID is not defined or not a number");
         }

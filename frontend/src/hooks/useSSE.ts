@@ -6,7 +6,8 @@ const useSSE = (url: string, initialState: any) => {
   useEffect(() => {
     const eventSource = new EventSource(url);
     eventSource.onmessage = (event) => {
-      setData(event.data);
+        const parsedData = JSON.parse(event.data);
+      setData(parsedData);
     };
     eventSource.onerror = (error) => {
       console.error('EventSource failed:', error);
