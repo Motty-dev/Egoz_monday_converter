@@ -48,9 +48,13 @@ const API_KEY = process.env.CONVERTOR_API_KEY;
 export const convertCurrency = async (amount: number, srcCurrency: string, date: string): Promise<ConversionResult> => {
   const cacheKey = `${date}_${srcCurrency}_to_ILS`;
 
+  if (srcCurrency === 'ILS') {
+    return { convertedAmount: amount, rate: 1 };
+  }
+
   if (conversionRatesCache[cacheKey]) {
     return { convertedAmount: amount * conversionRatesCache[cacheKey], rate: conversionRatesCache[cacheKey] };
-}
+  }
 
   try {
       let url;

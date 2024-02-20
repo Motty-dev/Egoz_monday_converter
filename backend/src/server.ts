@@ -30,7 +30,7 @@ app.use((err: any , req: Request, res: Response, next: NextFunction) => {
 app.listen(port, async () => {
   try {
     console.log(`Server running on http://localhost:${port}`);
-    //await runStartup(); 
+    await runStartup(); 
   } catch (error) {
     console.error('Error during startup:', error);
   }

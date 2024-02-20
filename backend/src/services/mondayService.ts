@@ -114,18 +114,26 @@ export const fetchDataFromBoard = async (boardId: number): Promise<DonationItem[
 };
 
 export const updateItemOnBoard = async (itemId: string, finalAmount: number, rate: number, boardId: number) => {
+
+
+  const roundedFinalAmount = parseFloat(finalAmount.toFixed(2));
+  const roundedFinalRate = parseFloat(rate.toFixed(2));
+
   const finalAmountColumnId = 'numbers53'; 
   const rateColumnId = 'numbers6'; 
+  const columnValuesString = `"{\\"${finalAmountColumnId}\\": \\"${roundedFinalAmount}\\", \\"${rateColumnId}\\": \\"${roundedFinalRate}\\"}"`;
 
+
+  const mutation = `
+    mutation {
+            change_multiple_column_values(board_id: ${boardId}, item_id: ${itemId}, column_values: ${columnValuesString}) {
+                id
+            }
+        }
+  `;
+  
   try {
-      const response = await monday.api(`
-          mutation {
-              change_multiple_column_values(board_id: ${boardId}, item_id: ${itemId}, column_values: "{\"${finalAmountColumnId}\": ${finalAmount}, \"${rateColumnId}\": ${rate}}") {
-                  id
-              }
-          }
-      `);
-
+      const response = await monday.api(mutation);
       return response;
   } catch (error) {
       console.error("Error updating item on Monday.com:", error);
